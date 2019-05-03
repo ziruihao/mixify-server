@@ -37,6 +37,9 @@ const app = express();
 // enable/disable cross origin resource sharing if necessary
 app.use(cors());
 
+// cookie parser
+app.use(cookieParser());
+
 // enable/disable http request logging
 app.use(morgan('dev'));
 
@@ -62,18 +65,18 @@ app.get('/', (req, res) => {
 
 app.get('/login', (req, res) => {
   var state = generateRandomString(16);
+  console.log(state);
   res.cookie(stateKey, state);
 
   var scope = 'user-read-private user-read-email';
-  res.redirect('https://accounts.spotify.com/authorize' +
+  res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
       client_id: client_id,
       scope: scope,
       redirect_uri: redirect_uri,
       state: state
-    })
-  );
+    }));
 });
 
 app.get('/callback', (req, res) => {
