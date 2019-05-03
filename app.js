@@ -8,6 +8,7 @@
  */
 
 require('dotenv').config();
+dotenv.config({ silent: true });
 
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
