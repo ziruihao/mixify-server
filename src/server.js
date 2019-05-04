@@ -10,6 +10,8 @@ import request from 'request';
 
 dotenv.config({ silent: true });
 
+console.log(process.env.CLIENT_ID);
+
 // authenticator variables
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
