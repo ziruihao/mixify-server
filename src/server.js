@@ -49,7 +49,13 @@ app.use(bodyParser.json());
 
 // additional init stuff should go before hitting the routing
 
-// default index route
+// adding cors
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.get('/', (req, res) => {
   res.send('hi');
 });
@@ -67,9 +73,7 @@ app.get('/login', (req, res) => {
   //   state: state
   // }));
 
-  res.header("Access-Control-Allow-Origin", "*");
-
-  console.log(`client_id: ${client_id}`);
+  // console.log(`client_id: ${client_id}`);
   var scope = 'user-read-private user-read-email streaming user-top-read';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
