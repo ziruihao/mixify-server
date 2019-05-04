@@ -142,6 +142,10 @@ app.get('/callback', (req, res) => {
   }
 });
 
+app.get('/#', (req, res) => {
+  res.send(req.params.access_token);
+})
+
 app.get('/refresh_token', function(req, res) {
 
   // requesting access token from refresh token
