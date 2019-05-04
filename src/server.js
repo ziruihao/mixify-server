@@ -13,7 +13,7 @@ dotenv.config({ silent: true });
 // authenticator variables
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
-var redirect_uri = 'https://mixify-server.herokuapp.com/callback'; // Your redirect uri
+var redirect_uri = 'localhost:9090/callback'; // Your redirect uri
 var stateKey = 'spotify_auth_state';
 
 /**
@@ -68,6 +68,15 @@ app.get('/login', (req, res) => {
   console.log(state);
   res.cookie(stateKey, state);
 
+  console.log(querystring.stringify({
+    response_type: 'code',
+    client_id: client_id,
+    scope: scope,
+    redirect_uri: redirect_uri,
+    state: state
+  }));
+
+  console.log(`client_id: ${client_id}`);
   var scope = 'user-read-private user-read-email';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
