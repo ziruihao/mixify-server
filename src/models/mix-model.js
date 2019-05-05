@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 
 const MixSchema = new Schema({
   // users: [{type: Schema.Types.ObjectId, ref: 'User'}],
+  name: String,
   users: ['Mixed'],
     /**
      * name: String

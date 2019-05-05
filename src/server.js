@@ -166,7 +166,7 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-app.use('/mix', mixRouter);
+app.use('/mixes', mixRouter);
 
 // START THE SERVER
 // =============================================================================
