@@ -1,4 +1,4 @@
-import Mix from '../models/mix';
+import Mix from '../models/mix-model';
 // import Track from '../models/track-model';
 // import User from '../models/user-model';
 
