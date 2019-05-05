@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import path from 'path';
 import morgan from 'morgan';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import querystring from 'query-string';
 import cookieParser from 'cookie-parser';

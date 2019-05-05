@@ -5,9 +5,10 @@ const MixSchema = new Schema({
   name: String,
   users: ['Mixed'],
     /**
-     * name: String
-     * id: String
-     * token: String
+     * name: String,
+     * id: String,
+     * token: String,
+     * topTracks: [String],
      */
   tracks: ['Mixed'],
     /**

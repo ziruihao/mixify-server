@@ -4,10 +4,10 @@ import * as Mix from '../controllers/mix-controller';
 const mixRouter = Router();
 
 mixRouter.route('/')
-  .post(Mix.addMix)
+  .post(Mix.createMix)
   .get(Mix.getMixes);
 
-  mixRouter.route('/:mixID')
+mixRouter.route('/:mixID')
   .put(Mix.updateMix)
   .get(Mix.getMix)
   .delete(Mix.deleteMix);
