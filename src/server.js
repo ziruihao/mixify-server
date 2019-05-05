@@ -8,6 +8,9 @@ import querystring from 'query-string';
 import cookieParser from 'cookie-parser';
 import request from 'request';
 
+import mixRouter from './routes/mix-router';
+import index from './routes/index';
+
 dotenv.config({ silent: true });
 
 // authenticator variables
@@ -64,14 +67,6 @@ app.get('/login', (req, res) => {
   var state = generateRandomString(16);
   console.log(state);
   res.cookie(stateKey, state);
-
-  // console.log(querystring.stringify({
-  //   response_type: 'code',
-  //   client_id: client_id,
-  //   scope: scope,
-  //   redirect_uri: redirect_uri,
-  //   state: state
-  // }));
 
   // console.log(`client_id: ${client_id}`);
   var scope = 'user-read-private user-read-email streaming user-top-read';
@@ -142,6 +137,7 @@ app.get('/callback', (req, res) => {
   }
 });
 
+// testing
 app.get('/#', (req, res) => {
   res.send(req.params.access_token);
 })
@@ -170,9 +166,17 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
+app.use('/mix', mixRouter);
+
 // START THE SERVER
 // =============================================================================
 const port = process.env.PORT || 9090;
 app.listen(port);
+
+// DB Setup
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/mixify';
+mongoose.connect(mongoURI);
+// set mongoose promises to es6 default
+mongoose.Promise = global.Promise;
 
 console.log(`listening on: ${port}`);
