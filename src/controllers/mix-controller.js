@@ -10,7 +10,7 @@ import Mix from '../models/mix-model';
 export const createMix = (req, res) => {
   const mix = new Mix();
   mix.name = req.body.name;
-  mix.users = req.body.users;
+  mix.collaboratorTokens = req.body.collaboratorTokens;
   mix.tracks = req.body.tracks;
   mix.save().then((result) => {
     res.json(result);
@@ -66,7 +66,7 @@ export const deleteMix = (req, res) => {
 export const updateMix = (req, res) => {
   Mix.findById(req.params.mixID).then((mix) => {
     mix.name = (req.body.name === null ? mix.name : req.body.name);
-    mix.users = (req.body.users === null ? mix.users : req.body.users);
+    mix.collaboratorTokens = (req.body.collaboratorTokens === null ? mix.collaboratorTokens : req.body.collaboratorTokens);
     mix.tracks = (req.body.tracks === null ? mix.tracks : req.body.tracks);
     mix.save().then((result) => {
       res.json(result);
@@ -77,10 +77,6 @@ export const updateMix = (req, res) => {
     res.status(404).json({ error });
   });
 };
-
-
-
-
 
 
 // /**
