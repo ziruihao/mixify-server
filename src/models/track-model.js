@@ -4,6 +4,7 @@
 // const TrackSchema = new Schema({
 //   name: String,
 //   id: String,
+//   uri: String,
 //   popularity: Number,
 //   albumName: String,
 //   artists: [String],
