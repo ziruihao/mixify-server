@@ -141,7 +141,7 @@ app.get('/callback', (req, res) => {
 // testing
 app.get('/#', (req, res) => {
   res.send(req.params.access_token);
-})
+});
 
 app.get('/refresh_token', function(req, res) {
 
