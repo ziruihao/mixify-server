@@ -17,6 +17,7 @@ dotenv.config({ silent: true });
 var client_id = process.env.CLIENT_ID; // Your client id
 var client_secret = process.env.CLIENT_SECRET; // Your secret
 var redirect_uri = 'https://mixify-server.herokuapp.com/callback'; // Your redirect uri
+var client_uri = 'http://localhost:8080/auth';
 var stateKey = 'spotify_auth_state';
 
 /**
@@ -119,17 +120,19 @@ app.get('/callback', (req, res) => {
           console.log(body);
         });
 
-        res.send({
-          access_token: access_token,
-          refresh_token: refresh_token,
-        });
+        // res.send({
+        //   access_token: access_token,
+        //   refresh_token: refresh_token,
+        // });
 
-        // // we can also pass the token to the browser to make requests from there
-        // res.redirect('/#' +
-        //   querystring.stringify({
-        //     access_token: access_token,
-        //     refresh_token: refresh_token
-        //   }));
+        // we can also pass the token to the browser to make requests from there
+        res.redirect(`${client_uri}` +
+          access_token
+          // querystring.stringify({
+          //   access_token: access_token,
+          //   refresh_token: refresh_token
+          // })
+        );
       } else {
         res.redirect('/#' +
           querystring.stringify({
