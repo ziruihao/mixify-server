@@ -1,7 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import path from 'path';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
@@ -9,14 +8,16 @@ import querystring from 'query-string';
 import cookieParser from 'cookie-parser';
 import request from 'request';
 
-import mixRouter from './routes/mix-router';
-
 dotenv.config({ silent: true });
 
 // authenticator variables
-var client_id = process.env.CLIENT_ID; // Your client id
-var client_secret = process.env.CLIENT_SECRET; // Your secret
-var redirect_uri = 'https://mixify-server.herokuapp.com/callback'; // Your redirect uri
+var client_id = process.env.CLIENT_ID;
+var client_secret = process.env.CLIENT_SECRET;
+var redirect_uri = 'https://mixify-server.herokuapp.com/authClient/callback';
+// var auth_client_redirect_uri = 'http://localhost:9090/authClient/callback';
+var get_token_redirect_uri = 'https://mixify-server.herokuapp.com/getToken/callback';
+// var get_token_redirect_uri = 'http://localhost:9090/getToken/callback';
+// var client_uri = 'http://mixify-client.surge.sh/auth';
 var client_uri = 'http://localhost:8080/auth';
 var stateKey = 'spotify_auth_state';
 
@@ -51,8 +52,6 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// additional init stuff should go before hitting the routing
-
 // adding cors
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -64,7 +63,10 @@ app.get('/', (req, res) => {
   res.send('hi');
 });
 
-app.get('/login', (req, res) => {
+/**
+ * This route handles requests from mixify-client to authenticate the main user into the app.
+ */
+app.get('/authClient', (req, res) => {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
@@ -74,12 +76,15 @@ app.get('/login', (req, res) => {
       response_type: 'code',
       client_id: client_id,
       scope: scope,
-      redirect_uri: redirect_uri,
+      redirect_uri: auth_client_redirect_uri,
       state: state
     }));
 });
 
-app.get('/callback', (req, res) => {
+/**
+ * Callback for the above route.
+ */
+app.get('/authClient/callback', (req, res) => {
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -94,7 +99,7 @@ app.get('/callback', (req, res) => {
       url: 'https://accounts.spotify.com/api/token',
       form: {
         code: code,
-        redirect_uri: redirect_uri,
+        redirect_uri: auth_client_redirect_uri,
         grant_type: 'authorization_code'
       },
       headers: {
@@ -115,17 +120,10 @@ app.get('/callback', (req, res) => {
           json: true
         };
 
-        // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
           console.log(body);
         });
 
-        // res.send({
-        //   access_token: access_token,
-        //   refresh_token: refresh_token,
-        // });
-
-        // we can also pass the token to the browser to make requests from there
         res.redirect(`${client_uri}/` +
           access_token
         );
@@ -139,7 +137,11 @@ app.get('/callback', (req, res) => {
   }
 });
 
-app.get('/token', (req, res) => {
+
+/**
+ * This route handles secondary requests from the client to get tokens for collaborators.
+ */
+app.get('/getToken', (req, res) => {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
@@ -149,12 +151,15 @@ app.get('/token', (req, res) => {
       response_type: 'code',
       client_id: client_id,
       scope: scope,
-      redirect_uri: 'https://mixify-server.herokuapp.com/callback2',
+      redirect_uri: get_token_redirect_uri,
       state: state
     }));
 });
 
-app.get('/callback2', (req, res) => {
+/**
+ * Callback for above route.
+ */
+app.get('/getToken/callback', (req, res) => {
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -169,7 +174,7 @@ app.get('/callback2', (req, res) => {
       url: 'https://accounts.spotify.com/api/token',
       form: {
         code: code,
-        redirect_uri: 'https://mixify-server.herokuapp.com/callback2',
+        redirect_uri: get_token_redirect_uri,
         grant_type: 'authorization_code'
       },
       headers: {
@@ -190,14 +195,12 @@ app.get('/callback2', (req, res) => {
           json: true
         };
 
-        // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
           console.log(body);
         });
 
         res.send({
           access_token: access_token,
-          refresh_token: refresh_token,
         });
 
       } else {
@@ -233,8 +236,6 @@ app.get('/refresh_token', function(req, res) {
     }
   });
 });
-
-app.use('/mixes', mixRouter);
 
 // START THE SERVER
 // =============================================================================
