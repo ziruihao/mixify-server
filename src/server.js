@@ -13,7 +13,7 @@ dotenv.config({ silent: true });
 // authenticator variables
 var client_id = process.env.CLIENT_ID;
 var client_secret = process.env.CLIENT_SECRET;
-var redirect_uri = 'https://mixify-server.herokuapp.com/authClient/callback';
+var auth_client_redirect_uri = 'https://mixify-server.herokuapp.com/authClient/callback';
 // var auth_client_redirect_uri = 'http://localhost:9090/authClient/callback';
 var get_token_redirect_uri = 'https://mixify-server.herokuapp.com/getToken/callback';
 // var get_token_redirect_uri = 'http://localhost:9090/getToken/callback';
