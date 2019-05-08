@@ -169,7 +169,7 @@ app.get('/callback2', (req, res) => {
       url: 'https://accounts.spotify.com/api/token',
       form: {
         code: code,
-        redirect_uri: redirect_uri,
+        redirect_uri: 'https://mixify-server.herokuapp.com/callback2',
         grant_type: 'authorization_code'
       },
       headers: {
