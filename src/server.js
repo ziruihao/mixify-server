@@ -17,8 +17,8 @@ var auth_client_redirect_uri = 'https://mixify-server.herokuapp.com/authClient/c
 // var auth_client_redirect_uri = 'http://localhost:9090/authClient/callback';
 var get_token_redirect_uri = 'https://mixify-server.herokuapp.com/getToken/callback';
 // var get_token_redirect_uri = 'http://localhost:9090/getToken/callback';
-var client_uri = 'http://mixify-client.surge.sh/auth';
-// var client_uri = 'http://localhost:8080/auth';
+// var client_uri = 'http://mixify-client.surge.sh/auth';
+var client_uri = 'http://localhost:8080/auth';
 var stateKey = 'spotify_auth_state';
 
 /**
