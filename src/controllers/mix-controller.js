@@ -10,8 +10,11 @@ import Mix from '../models/mix-model';
 export const createMix = (req, res) => {
   const mix = new Mix();
   mix.name = req.body.name;
-  mix.collaboratorTokens = req.body.collaboratorTokens;
+  mix.collaborators = req.body.collaborators;
+  mix.owner = req.body.owner;
   mix.tracks = req.body.tracks;
+  mix.spotifyPlaylistID = req.body.spotifyPlaylistID;
+  console.log(mix.owner);
   mix.save().then((result) => {
     res.json(result);
   }).catch((error) => {
@@ -65,9 +68,15 @@ export const deleteMix = (req, res) => {
  */
 export const updateMix = (req, res) => {
   Mix.findById(req.params.mixID).then((mix) => {
+    console.log(mix.owner);
+    console.log(req.body.name);
+    console.log(req.body.name === null);
     mix.name = (req.body.name === null ? mix.name : req.body.name);
-    mix.collaboratorTokens = (req.body.collaboratorTokens === null ? mix.collaboratorTokens : req.body.collaboratorTokens);
+    mix.owner = (req.body.owner === null ? mix.owner : req.body.owner);
+    mix.collaborators = (req.body.collaborators === null ? mix.collaborators : req.body.collaborators);
     mix.tracks = (req.body.tracks === null ? mix.tracks : req.body.tracks);
+    mix.spotifyPlaylistID = (req.body.spotifyPlaylistID === null ? mix.spotifyPlaylistID : req.body.spotifyPlaylistID);
+    console.log(req.body.owner);
     mix.save().then((result) => {
       res.json(result);
     }).catch((error) => {

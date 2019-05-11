@@ -2,22 +2,34 @@ import mongoose, { Schema } from 'mongoose';
 
 const MixSchema = new Schema({
   name: String,
-  collaboratorTokens: ['Mixed'],
+  owner: {},
+  collaborators: [{}],
   /**
-     * token: String,
+     * name: String,
+     * id: String,
+     * token: String
+     * topTracks: [{
+     *  name: String,
+     *  id: String,
+     *  uri: String,
+     *  popularity: Number,
+     *  albumName: String,
+     *  artistNames: String.
+     * }],
      */
-  tracks: ['Mixed'],
+  tracks: [{}],
   /**
      * name: String,
      * id: String,
      * popularity: Number,
      * albumName: String,
-     * artists: [String],
+     * artistNames: [String],
      * fromUser: Mixed,
      *    name: String,
      *    id: String,
      *    token: String,
      */
+  spotifyPlaylistID: String,
 }, {
   toJSON: {
     virtuals: true,
