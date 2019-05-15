@@ -8,17 +8,19 @@ import querystring from 'query-string';
 import cookieParser from 'cookie-parser';
 import request from 'request';
 
+import mixRouter from './routes/mix-router';
+
 dotenv.config({ silent: true });
 
 // authenticator variables
 var client_id = process.env.CLIENT_ID;
 var client_secret = process.env.CLIENT_SECRET;
-var auth_client_redirect_uri = 'https://mixify-server.herokuapp.com/authClient/callback';
-// var auth_client_redirect_uri = 'http://localhost:9090/authClient/callback';
-var get_token_redirect_uri = 'https://mixify-server.herokuapp.com/getToken/callback';
-// var get_token_redirect_uri = 'http://localhost:9090/getToken/callback';
-var client_uri = 'http://mixify-client.surge.sh/auth';
-// var client_uri = 'http://localhost:8080/auth';
+// var auth_client_redirect_uri = 'https://mixify-server.herokuapp.com/authOwner/callback';
+var auth_client_redirect_uri = 'http://localhost:9090/authOwner/callback';
+// var get_token_redirect_uri = 'https://mixify-server.herokuapp.com/authCollaborator/callback';
+var get_token_redirect_uri = 'http://localhost:9090/authCollaborator/callback';
+// var client_uri = 'http://mixify-client.surge.sh/auth';
+var client_uri = 'http://localhost:8080/auth';
 var stateKey = 'spotify_auth_state';
 
 /**
@@ -63,10 +65,12 @@ app.get('/', (req, res) => {
   res.send('hi');
 });
 
+app.use('/mixes', mixRouter);
+
 /**
  * This route handles requests from mixify-client to authenticate the main user into the app.
  */
-app.get('/authClient', (req, res) => {
+app.get('/authOwner', (req, res) => {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
@@ -84,7 +88,7 @@ app.get('/authClient', (req, res) => {
 /**
  * Callback for the above route.
  */
-app.get('/authClient/callback', (req, res) => {
+app.get('/authOwner/callback', (req, res) => {
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -141,9 +145,10 @@ app.get('/authClient/callback', (req, res) => {
 /**
  * This route handles secondary requests from the client to get tokens for collaborators.
  */
-app.get('/getToken', (req, res) => {
+app.get('/authCollaborator', (req, res) => {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
+  res.cookie('mixId', req.query.mixId);
 
   var scope = 'user-read-private user-read-email streaming user-read-birthdate user-top-read user-library-read playlist-modify-public user-follow-read user-read-playback-state user-modify-playback-state playlist-read-private user-library-modify playlist-read-collaborative playlist-modify-private user-read-currently-playing user-read-recently-played';
   res.redirect('https://accounts.spotify.com/authorize?' +
@@ -159,17 +164,20 @@ app.get('/getToken', (req, res) => {
 /**
  * Callback for above route.
  */
-app.get('/getToken/callback', (req, res) => {
+app.get('/authCollaborator/callback', (req, res) => {
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
-  if (state === null || state !== storedState) {
+  var mixId = req.cookies? req.cookies['mixId'] : null;
+  console.log(req.cookies['mixId']);
+  if (state === null || state !== storedState || mixId === null) {
     res.redirect('/#' +
       querystring.stringify({
         error: 'state_mismatch'
       }));
   } else {
     res.clearCookie(stateKey);
+    res.clearCookie('mixId');
     var authOptions = {
       url: 'https://accounts.spotify.com/api/token',
       form: {
@@ -199,9 +207,16 @@ app.get('/getToken/callback', (req, res) => {
           console.log(body);
         });
 
-        res.send({
-          access_token: access_token,
-        });
+        // res.send({
+        //   access_token: access_token,
+        // });
+
+        res.redirect(`${client_uri}/` + access_token + '?' + 
+        querystring.stringify({
+          isCollaborator: 'true',
+          mixId, 
+        })
+      );
 
       } else {
         res.redirect('/#' +
