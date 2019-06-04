@@ -15,12 +15,12 @@ dotenv.config({ silent: true });
 // authenticator variables
 var client_id = process.env.CLIENT_ID;
 var client_secret = process.env.CLIENT_SECRET;
-var auth_client_redirect_uri = 'https://mixify-server.herokuapp.com/authOwner/callback';
-// var auth_client_redirect_uri = 'http://localhost:9090/authOwner/callback';
-var get_token_redirect_uri = 'https://mixify-server.herokuapp.com/authCollaborator/callback';
-// var get_token_redirect_uri = 'http://localhost:9090/authCollaborator/callback';
-var client_uri = 'http://mixify-client.surge.sh/auth';
-// var client_uri = 'http://localhost:8080/auth';
+// var auth_client_redirect_uri = 'https://mixify-server.herokuapp.com/authOwner/callback';
+var auth_client_redirect_uri = 'http://localhost:9090/authOwner/callback';
+// var get_token_redirect_uri = 'https://mixify-server.herokuapp.com/authCollaborator/callback';
+var get_token_redirect_uri = 'http://localhost:9090/authCollaborator/callback';
+// var client_uri = 'http://mixify-client.surge.sh/auth';
+var client_uri = 'http://localhost:8080/auth';
 var stateKey = 'spotify_auth_state';
 
 /**
